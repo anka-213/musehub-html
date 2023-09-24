@@ -144,13 +144,16 @@ function DisplaySoundfonts() {
               <img src={item?.logoImageUrl ?? ""} alt="logo" width={100} />
               {item.name}
             </h3>
-            <ShowTorrent
-              filename={filename}
-              downloadUrl={
-                item?.latestReleasedVersion?.packageMusedownloadUrl ?? "no url"
-              }
-            />
-            <p>{humanSize}</p>
+            <p>
+              <ShowTorrent
+                filename={filename}
+                downloadUrl={
+                  item?.latestReleasedVersion?.packageMusedownloadUrl ??
+                  "no url"
+                }
+              />
+              {humanSize}
+            </p>
             <small>{item?.latestReleasedVersion?.overview}</small>
           </div>
         );
@@ -182,6 +185,7 @@ const ShowTorrent = ({
     <input
       style={{
         paddingLeft: "10px",
+        paddingRight: "10px",
       }}
       type="image"
       alt="Magnet link"
@@ -195,7 +199,6 @@ const ShowTorrent = ({
   </>
 );
 
-const linkStyle = {};
 function DisplayApp({ appName }: { appName: string }) {
   // const { _loading, _error, _data } = useQuery(GET_MUSESAMPLER);
   const { loading, error, data } = useQuery(GET_MUSESAMPLER, {

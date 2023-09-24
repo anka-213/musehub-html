@@ -1,8 +1,10 @@
 import React from "react";
 // import logo from "./logo.svg";
+import magnetIcon from "./icon-magnet.gif";
 import "./App.css";
 import { useQuery } from "@apollo/client";
 import { graphql } from "./gql/gql";
+import * as parseTorrent from "parse-torrent";
 
 // const GET_LOCATIONS = gql`
 //   query GetLocations {
@@ -72,6 +74,25 @@ const convertFiletoBlobAndDownload = async (file: string, name: string) => {
   a.remove();
 };
 
+const parseTorrentAsync = (blob: Blob) =>
+  new Promise<parseTorrent.Instance>((ok, fail) =>
+    parseTorrent.remote(blob, (err, result) => {
+      if (err != null || !result) fail(err);
+      else ok(result);
+    })
+  );
+
+async function makeMagnet(downloadUrl: string) {
+  const blob = await fetch(downloadUrl, { cache: "force-cache" }).then((r) =>
+    r.blob()
+  );
+  const torrent = await parseTorrentAsync(blob);
+  console.log(torrent);
+  const magnet = parseTorrent.toMagnetURI(torrent);
+  console.log(magnet);
+  window.location.href = magnet;
+}
+
 function DisplayLocations() {
   // const { _loading, _error, _data } = useQuery(GET_MUSESAMPLER);
   const { loading, error, data } = useQuery(GET_MUSESAMPLER);
@@ -81,7 +102,7 @@ function DisplayLocations() {
   if (!data) return <p>Got no data</p>;
 
   return (
-    <>
+    <div>
       {appTypes.map((platform) => {
         let platData = data?.application?.[platform]?.latestVersion;
         let platformName = platform.replace("App", "");
@@ -90,9 +111,13 @@ function DisplayLocations() {
         if (!buildFileMusedownloadUrl) return <p>Got no data</p>;
         const downloadUrl = buildFileMusedownloadUrl;
         const filename = `musesampler-${platformName}-${version}.torrent`;
+        const linkStyle = {
+          paddingLeft: "10px",
+        };
+
         return (
           <div key={platform}>
-            <h3>{platformName}</h3>
+            <b>{platformName}: </b>
             <a
               href={downloadUrl}
               download={filename}
@@ -104,6 +129,18 @@ function DisplayLocations() {
             >
               {filename}
             </a>
+
+            <input
+              style={linkStyle}
+              type="image"
+              alt="Magnet link"
+              src={magnetIcon}
+              onClick={(e) => {
+                e.preventDefault();
+                makeMagnet(downloadUrl);
+              }}
+              className="App-link"
+            ></input>
           </div>
         );
       })}
@@ -122,7 +159,7 @@ function DisplayLocations() {
           <br />
         </div>
       ))} */}
-    </>
+    </div>
   );
 }
 

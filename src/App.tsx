@@ -270,6 +270,12 @@ function App() {
         >
           Learn React
         </a> */}
+        <h1>Download MuseSounds without MuseHub</h1>
+        <p>
+          This is a collection of links to the official torrent files for
+          downloading the MuseSound soundfonts and the musesampler that's
+          required to use them.
+        </p>
         <DisplayApp appName="musesampler" />
         <br />
         <DisplayApp appName="musescore" />

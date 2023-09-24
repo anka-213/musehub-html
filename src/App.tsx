@@ -58,6 +58,20 @@ const appTypes: ("linuxApp" | "macApp" | "windowsApp")[] = [
   "windowsApp",
 ];
 
+const convertFiletoBlobAndDownload = async (file: string, name: string) => {
+  const blob = await fetch(file).then((r) => r.blob());
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.style.display = "none";
+  a.href = url;
+  a.download = name; // add custom extension here
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  // Remove "a" tag from the body
+  a.remove();
+};
+
 function DisplayLocations() {
   // const { _loading, _error, _data } = useQuery(GET_MUSESAMPLER);
   const { loading, error, data } = useQuery(GET_MUSESAMPLER);
@@ -73,14 +87,19 @@ function DisplayLocations() {
         let platformName = platform.replace("App", "");
         if (!platData) return <p>Got no data</p>;
         let { id, version, buildFileMusedownloadUrl } = platData;
-        if (!platData) return <p>Got no data</p>;
+        if (!buildFileMusedownloadUrl) return <p>Got no data</p>;
+        const downloadUrl = buildFileMusedownloadUrl;
         const filename = `musesampler-${platformName}-${version}.torrent`;
         return (
           <div>
             <h3>{platformName}</h3>
             <a
-              href={buildFileMusedownloadUrl ?? id}
+              href={downloadUrl}
               download={filename}
+              onClick={(e) => {
+                e.preventDefault();
+                convertFiletoBlobAndDownload(downloadUrl, filename);
+              }}
               className="App-link"
             >
               {filename}

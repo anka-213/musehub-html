@@ -15,7 +15,7 @@ import { graphql } from "./gql/gql";
 //   }
 // `;
 
-const GET_MUSESAMPLER = graphql(/* GraphQL */ `
+const GET_MUSESAMPLER = graphql(`
   query MuseSampler {
     application(id: "musesampler") {
       macApp {

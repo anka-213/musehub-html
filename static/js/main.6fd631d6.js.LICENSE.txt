@@ -1,15 +1,3 @@
-/* Common package for dealing with hex/string/uint8 conversions (and sha1 hashing)
-*
-* @author   Jimmy Wärting <jimmy@warting.se> (https://jimmy.warting.se/opensource)
-* @license  MIT
-*/
-
-/*! magnet-uri. MIT License. WebTorrent LLC <https://webtorrent.io/opensource> */
-
-/*! parse-torrent. MIT License. WebTorrent LLC <https://webtorrent.io/opensource> */
-
-/*! queue-microtask. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
-
 /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
 
 /**
@@ -50,6 +38,14 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ */
+
+/**
+ * filesize
+ *
+ * @copyright 2023 Jason Mulligan <jason.mulligan@avoidwork.com>
+ * @license BSD-3-Clause
+ * @version 10.0.12
  */
 
 /** @license React v16.13.1

@@ -74,11 +74,16 @@ function DisplayLocations() {
         if (!platData) return <p>Got no data</p>;
         let { id, version, buildFileMusedownloadUrl } = platData;
         if (!platData) return <p>Got no data</p>;
+        const filename = `musesampler-${platformName}-${version}.torrent`;
         return (
           <div>
             <h3>{platformName}</h3>
-            <a href={buildFileMusedownloadUrl ?? id} className="App-link">
-              muse-sampler-{version}
+            <a
+              href={buildFileMusedownloadUrl ?? id}
+              download={filename}
+              className="App-link"
+            >
+              {filename}
             </a>
           </div>
         );

@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -2438,3 +2439,11 @@ export type WindowsApplicationInput = {
   MSIXPackageID?: InputMaybe<Scalars['String']['input']>;
   isMicrosoftStoreApp?: InputMaybe<Scalars['Boolean']['input']>;
 };
+
+export type MetricsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MetricsQuery = { __typename?: 'Query', metrics_allTimeDownloadsAndSavingsMetrics: { __typename?: 'AllTimeDownloadMetrics', downloadedSize: string, bandwidthCostSavings: number } };
+
+
+export const MetricsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Metrics"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"metrics_allTimeDownloadsAndSavingsMetrics"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"downloadedSize"}},{"kind":"Field","name":{"kind":"Name","value":"bandwidthCostSavings"}}]}}]}}]} as unknown as DocumentNode<MetricsQuery, MetricsQueryVariables>;

@@ -127,16 +127,11 @@ function DisplaySoundfonts() {
       <h2>Download soundfonts</h2>
       {data.libraries_search.items.map((item) => {
         if (!item?.latestReleasedVersion?.packageMusedownloadUrl)
-          return (
-            <h3>
-              <img src={item?.logoImageUrl ?? ""} alt="logo" width={100} />
-              {item.name}
-            </h3>
-          );
+          return <h3>{item.name}</h3>;
         const latest = item.latestReleasedVersion;
-        const filename = `${item.name
-          .replaceAll(" ", "-")
-          .toLocaleLowerCase()}-${latest.version}.torrent`;
+        const filename = `${
+          item?.name?.replace(" ", "-")?.toLocaleLowerCase() ?? "unknown"
+        }-${latest.version}.torrent`;
         const humanSize = filesize(latest.downloadSize ?? 0);
         return (
           <div>

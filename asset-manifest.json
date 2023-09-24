@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/musehub-html/static/css/main.073c9b0a.css",
+    "main.js": "/musehub-html/static/js/main.c95b48d6.js",
+    "static/js/787.7eb331de.chunk.js": "/musehub-html/static/js/787.7eb331de.chunk.js",
+    "index.html": "/musehub-html/index.html",
+    "main.073c9b0a.css.map": "/musehub-html/static/css/main.073c9b0a.css.map",
+    "main.c95b48d6.js.map": "/musehub-html/static/js/main.c95b48d6.js.map",
+    "787.7eb331de.chunk.js.map": "/musehub-html/static/js/787.7eb331de.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.073c9b0a.css",
+    "static/js/main.c95b48d6.js"
+  ]
+}

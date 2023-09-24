@@ -3,13 +3,50 @@ import logo from "./logo.svg";
 import "./App.css";
 import { gql, useQuery } from "@apollo/client";
 
+// const GET_LOCATIONS = gql`
+//   query GetLocations {
+//     locations {
+//       id
+//       name
+//       description
+//       photo
+//     }
+//   }
+// `;
+
+// const GET_MUSESAMPLER = gql`
+//   {
+//     application(id: "musesampler") {
+//       macApp {
+//         latestVersion {
+//           id
+//           versionFull
+//           buildFileMusedownloadUrl
+//         }
+//       }
+//       windowsApp {
+//         latestVersion {
+//           id
+//           versionFull
+//           buildFileMusedownloadUrl
+//         }
+//       }
+//       linuxApp {
+//         latestVersion {
+//           id
+//           versionFull
+//           buildFileMusedownloadUrl
+//         }
+//       }
+//     }
+//   }
+// `;
+
 const GET_LOCATIONS = gql`
-  query GetLocations {
-    locations {
-      id
-      name
-      description
-      photo
+  query Metrics {
+    metrics_allTimeDownloadsAndSavingsMetrics {
+      downloadedSize
+      bandwidthCostSavings
     }
   }
 `;
@@ -26,6 +63,7 @@ interface MyQuery {
 }
 
 function DisplayLocations() {
+  // const { _loading, _error, _data } = useQuery(GET_MUSESAMPLER);
   const { loading, error, data } = useQuery<MyQuery>(GET_LOCATIONS);
 
   if (loading) return <p>Loading...</p>;

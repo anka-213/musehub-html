@@ -15,6 +15,7 @@
     "@types/react-dom": "^18.2.7",
     "graphql": "^16.8.1",
     "parse-torrent": "^11.0.14",
+    "path-browserify": "^1.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
@@ -54,6 +55,7 @@
     "@graphql-codegen/cli": "5.0.0",
     "@graphql-codegen/client-preset": "4.1.0",
     "@graphql-codegen/introspection": "4.0.0",
+    "@types/parse-torrent": "^5.8.5",
     "gh-pages": "^6.0.0"
   },
   "peerDependencies": {

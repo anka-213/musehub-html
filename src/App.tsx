@@ -150,7 +150,17 @@ function DisplaySoundfonts() {
               />
               {humanSize}
             </p>
-            <small>{item?.latestReleasedVersion?.overview}</small>
+            <div
+              style={{
+                maxWidth: "700px",
+                textAlign: "justify",
+                hyphens: "auto",
+                paddingLeft: "20px",
+                paddingRight: "20px",
+              }}
+            >
+              <small>{item?.latestReleasedVersion?.overview}</small>
+            </div>
           </div>
         );
       })}

@@ -6,7 +6,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 const client = new ApolloClient({
-  uri: "https://flyby-router-demo.herokuapp.com/",
+  uri: "https://muse-webservice.azurewebsites.net/graphql",
   cache: new InMemoryCache(),
 });
 const root = ReactDOM.createRoot(

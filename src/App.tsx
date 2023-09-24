@@ -1,7 +1,8 @@
 import React from "react";
-import logo from "./logo.svg";
+// import logo from "./logo.svg";
 import "./App.css";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import { graphql } from "./gql/gql";
 
 // const GET_LOCATIONS = gql`
 //   query GetLocations {
@@ -14,57 +15,52 @@ import { gql, useQuery } from "@apollo/client";
 //   }
 // `;
 
-// const GET_MUSESAMPLER = gql`
-//   {
-//     application(id: "musesampler") {
-//       macApp {
-//         latestVersion {
-//           id
-//           versionFull
-//           buildFileMusedownloadUrl
-//         }
-//       }
-//       windowsApp {
-//         latestVersion {
-//           id
-//           versionFull
-//           buildFileMusedownloadUrl
-//         }
-//       }
-//       linuxApp {
-//         latestVersion {
-//           id
-//           versionFull
-//           buildFileMusedownloadUrl
-//         }
-//       }
-//     }
-//   }
-// `;
-
-const GET_LOCATIONS = gql`
-  query Metrics {
-    metrics_allTimeDownloadsAndSavingsMetrics {
-      downloadedSize
-      bandwidthCostSavings
+const GET_MUSESAMPLER = graphql(/* GraphQL */ `
+  query MuseSampler {
+    application(id: "musesampler") {
+      macApp {
+        latestVersion {
+          id
+          version
+          buildFileMusedownloadUrl
+        }
+      }
+      windowsApp {
+        latestVersion {
+          id
+          version
+          buildFileMusedownloadUrl
+        }
+      }
+      linuxApp {
+        latestVersion {
+          id
+          version
+          buildFileMusedownloadUrl
+        }
+      }
     }
   }
-`;
+`);
 
-interface Locations {
-  id: string;
-  name: string;
-  description: string;
-  photo: string;
-}
+// const GET_LOCATIONS = graphql(/* GraphQL */ `
+//   query Metrics {
+//     metrics_allTimeDownloadsAndSavingsMetrics {
+//       downloadedSize
+//       bandwidthCostSavings
+//     }
+//   }
+// `);
 
-interface MyQuery {
-  locations: [Locations];
-}
+const appTypes: ("linuxApp" | "macApp" | "windowsApp")[] = [
+  "linuxApp",
+  "macApp",
+  "windowsApp",
+];
 
 function DisplayLocations() {
   // const { _loading, _error, _data } = useQuery(GET_MUSESAMPLER);
-  const { loading, error, data } = useQuery<MyQuery>(GET_LOCATIONS);
+  const { loading, error, data } = useQuery(GET_MUSESAMPLER);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
@@ -72,7 +68,22 @@ function DisplayLocations() {
 
   return (
     <>
-      {data.locations.map(({ id, name, description, photo }) => (
+      {appTypes.map((platform) => {
+        let platData = data?.application?.[platform]?.latestVersion;
+        let platformName = platform.replace("App", "");
+        if (!platData) return <p>Got no data</p>;
+        let { id, version, buildFileMusedownloadUrl } = platData;
+        if (!platData) return <p>Got no data</p>;
+        return (
+          <div>
+            <h3>{platformName}</h3>
+            <a href={buildFileMusedownloadUrl ?? id} className="App-link">
+              muse-sampler-{version}
+            </a>
+          </div>
+        );
+      })}
+      {/* {data.application.map(({ id, name, description, photo }) => (
         <div key={id}>
           <h3>{name}</h3>
           <img
@@ -86,7 +97,7 @@ function DisplayLocations() {
           <p>{description}</p>
           <br />
         </div>
-      ))}
+      ))} */}
     </>
   );
 }
@@ -95,18 +106,19 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
+        <h2>Download musesampler</h2>
+        {/* <img src={logo} className="App-logo" alt="logo" /> */}
+        {/* <p>
           Edit <code>src/App.tsx</code> and do save to reload.
-        </p>
-        <a
+        </p> */}
+        {/* <a
           className="App-link"
           href="https://reactjs.org"
           target="_blank"
           rel="noopener noreferrer"
         >
           Learn React
-        </a>
+        </a> */}
         <DisplayLocations />
       </header>
     </div>

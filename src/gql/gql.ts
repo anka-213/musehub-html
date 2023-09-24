@@ -13,7 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  query Metrics {\n    metrics_allTimeDownloadsAndSavingsMetrics {\n      downloadedSize\n      bandwidthCostSavings\n    }\n  }\n": types.MetricsDocument,
+    "\n  query MuseSampler {\n    application(id: \"musesampler\") {\n      macApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n      windowsApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n      linuxApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n    }\n  }\n": types.MuseSamplerDocument,
 };
 
 /**
@@ -33,7 +33,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query Metrics {\n    metrics_allTimeDownloadsAndSavingsMetrics {\n      downloadedSize\n      bandwidthCostSavings\n    }\n  }\n"): (typeof documents)["\n  query Metrics {\n    metrics_allTimeDownloadsAndSavingsMetrics {\n      downloadedSize\n      bandwidthCostSavings\n    }\n  }\n"];
+export function graphql(source: "\n  query MuseSampler {\n    application(id: \"musesampler\") {\n      macApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n      windowsApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n      linuxApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query MuseSampler {\n    application(id: \"musesampler\") {\n      macApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n      windowsApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n      linuxApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

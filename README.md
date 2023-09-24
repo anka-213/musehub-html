@@ -1,6 +1,6 @@
 # A simple web-based alternative to MuseHub
 
-Since MuseScore requires a closed-source binary program [MuseHub](https://www.musehub.com/) in order to download their soundfonts etc, I built this as an opensource atlernative. It is simply a webpage which links to the official torrent files and then you can use those to download the files you want using your bittorent client of choice.
+Since [MuseScore](https://musescore.org/) requires a closed-source binary program [MuseHub](https://www.musehub.com/) in order to download their new soundfonts [MuseSounds](https://musescore.org/en/handbook/4/installing-muse-sounds), I built this as an opensource atlernative. It is simply a webpage which links to the official torrent files and then you can use those to download the files you want using your bittorent client of choice.
 
 [Click here](https://anka-213.github.io/musehub-html) to get to the webpage
 

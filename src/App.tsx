@@ -1,10 +1,10 @@
 import React from "react";
 // import logo from "./logo.svg";
-import magnetIcon from "./icon-magnet.gif";
+// import magnetIcon from "./icon-magnet.gif";
 import "./App.css";
 import { useQuery } from "@apollo/client";
 import { graphql } from "./gql/gql";
-import * as parseTorrent from "parse-torrent";
+// import * as parseTorrent from "parse-torrent";
 import { filesize } from "filesize";
 import { ForkMe } from "fork-me-corner";
 
@@ -98,24 +98,25 @@ const convertFiletoBlobAndDownload = async (file: string, name: string) => {
   a.remove();
 };
 
-const parseTorrentAsync = (blob: Blob) =>
-  new Promise<parseTorrent.Instance>((ok, fail) =>
-    parseTorrent.remote(blob, (err, result) => {
-      if (err != null || !result) fail(err);
-      else ok(result);
-    })
-  );
+// const parseTorrentAsync = (blob: Blob) =>
+//   new Promise<parseTorrent.Instance>((ok, fail) =>
+//     parseTorrent.remote(blob, (err, result) => {
+//       if (err != null || !result) fail(err);
+//       else ok(result);
+//     })
+//   );
 
-async function makeMagnet(downloadUrl: string) {
-  const blob = await fetch(downloadUrl, { cache: "force-cache" }).then((r) =>
-    r.blob()
-  );
-  const torrent = await parseTorrentAsync(blob);
-  console.log(torrent);
-  const magnet = parseTorrent.toMagnetURI(torrent);
-  console.log(magnet);
-  window.location.href = magnet;
-}
+// async function makeMagnet(downloadUrl: string) {
+//   const blob = await fetch(downloadUrl, { cache: "force-cache" }).then((r) =>
+//     r.blob()
+//   );
+//   const torrent = await parseTorrentAsync(blob);
+//   console.log(torrent);
+//   const magnet = parseTorrent.toMagnetURI(torrent);
+//   console.log(magnet);
+//   window.location.href = magnet;
+// }
+
 function DisplaySoundfonts() {
   const { loading, error, data } = useQuery(GET_SOUNDFONTS);
 
@@ -148,6 +149,11 @@ function DisplaySoundfonts() {
                   "no url"
                 }
               />
+              <span
+                style={{
+                  paddingLeft: "10px",
+                }}
+              ></span>
               {humanSize}
             </p>
             <div
@@ -188,7 +194,7 @@ const ShowTorrent = ({
       {filename}
     </a>
 
-    <input
+    {/* <input
       style={{
         paddingLeft: "10px",
         paddingRight: "10px",
@@ -201,7 +207,7 @@ const ShowTorrent = ({
         makeMagnet(downloadUrl);
       }}
       className="App-link"
-    ></input>
+    ></input> */}
   </>
 );
 
@@ -278,10 +284,18 @@ function App() {
           Learn React
         </a> */}
         <h1>Download MuseSounds without MuseHub</h1>
-        <p>
+        <p
+          style={{
+            maxWidth: "700px",
+            textAlign: "justify",
+            hyphens: "auto",
+            paddingLeft: "20px",
+            paddingRight: "20px",
+          }}
+        >
           This is a collection of links to the official torrent files for
-          downloading the MuseSound soundfonts and the musesampler that's
-          required to use them.
+          downloading the MuseSound soundfonts and the musesampler library
+          that's required to use them.
         </p>
         <DisplayApp appName="musesampler" />
         <br />

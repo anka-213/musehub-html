@@ -10,6 +10,9 @@ Since MuseScore requires a closed-source binary program [MuseHub](https://www.mu
 3. Download the torrents using a torrent client. For example [Transmission](https://transmissionbt.com/) or [qBittorrent](https://www.qbittorrent.org/)
 4. Move the downloaded files to the correct location for MuseScore to find them
 
+### Shellscript
+As an alternative, you can run [this script](./get_musesampler.sh) to download the torrent files. It currently only supports downloading the musesampler
+
 ## File locations
 
 TODO: Determine where to put the files for each OS

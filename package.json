@@ -14,6 +14,7 @@
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
     "filesize": "^10.0.12",
+    "fork-me-corner": "^1.0.1",
     "graphql": "^16.8.1",
     "parse-torrent": "^11.0.14",
     "path-browserify": "^1.0.1",

@@ -6,6 +6,7 @@ import { useQuery } from "@apollo/client";
 import { graphql } from "./gql/gql";
 import * as parseTorrent from "parse-torrent";
 import { filesize } from "filesize";
+import { ForkMe } from "fork-me-corner";
 
 // const GET_LOCATIONS = gql`
 //   query GetLocations {
@@ -252,6 +253,7 @@ function DisplayApp({ appName }: { appName: string }) {
 function App() {
   return (
     <div className="App">
+      <ForkMe repo="https://github.com/anka-213/musehub-html" />
       <header className="App-header">
         {/* <img src={logo} className="App-logo" alt="logo" /> */}
         {/* <p>

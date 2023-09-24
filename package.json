@@ -1,6 +1,7 @@
 {
   "name": "musehub-html",
   "version": "0.1.0",
+  "homepage": "https://anka-213.github.io/musehub-html",
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.8.4",
@@ -23,6 +24,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "postbuild": "react-snap",

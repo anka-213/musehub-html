@@ -1,0 +1,1478 @@
+directive @cached on FIELD_DEFINITION
+
+directive @union(
+  discriminatorField: String
+  additionalFields: [AdditionalEntityFields]
+) on UNION
+
+directive @abstractEntity(
+  discriminatorField: String!
+  additionalFields: [AdditionalEntityFields]
+) on INTERFACE
+
+directive @entity(
+  embedded: Boolean
+  additionalFields: [AdditionalEntityFields]
+) on OBJECT
+
+directive @column(overrideType: String) on FIELD_DEFINITION
+
+directive @id on FIELD_DEFINITION
+
+directive @link(overrideType: String) on FIELD_DEFINITION
+
+directive @embedded on FIELD_DEFINITION
+
+directive @map(path: String!) on FIELD_DEFINITION
+
+"""
+Generic application object. Represents application metadata common for all types of platform supported by an application.
+"""
+type Application {
+  id: String!
+  name: String!
+  description(locale: LocaleFilter): String
+  imageFilePath: String
+  isHidden: Boolean
+  macApp: MacApplication
+  windowsApp: WindowsApplication
+  linuxApp: LinuxApplication
+  isHero: Boolean
+  heroImageFilePath: String
+  heroText(locale: LocaleFilter): String
+  l10n: [Application_L10n!]
+  imageUrl: String
+  imageMirrorUrls: [String!]!
+  heroImageUrl: String
+  heroImageMirrorUrls: [String!]!
+}
+
+type Application_L10n implements L10n {
+  l10n_langId: String!
+  description: String
+  heroText: String
+}
+
+enum ApplicationVersionStatus {
+  beta
+  release
+}
+
+type Query {
+  applications: [Application!]!
+  application(id: String!): Application
+  applications_linuxVersionExists(
+    appId: String!
+    versionStr: String!
+    buildNumber: Int!
+  ): Boolean!
+  applications_macVersionExists(
+    appId: String!
+    versionStr: String!
+    buildNumber: Int!
+  ): Boolean!
+  applications_windowsVersionExists(
+    appId: String!
+    versionStr: String!
+    buildNumber: Int!
+  ): Boolean!
+  bundles_search(
+    filter: BundleFilterInput
+    orderBy: BundleSearchOrderByInput
+    paging: PagingInput
+  ): BundlesSearchResult!
+  bundle(id: String!): Bundle
+  effects_search(
+    filter: EffectFilterInput
+    orderBy: EffectSearchOrderByInput
+    paging: PagingInput
+  ): EffectsSearchResult!
+  effect(id: String!): Effect
+  effects_versions_search(
+    filter: EffectVersionsFilterInput
+    paging: PagingInput
+  ): EffectVersionsSearchResult!
+  effects_version(id: String!): EffectVersion
+  elements_albums: [ElementAlbum!]!
+  elements_genres: [ElementGenre!]!
+  elements_instruments: [ElementInstrument!]!
+  elements_keywords: [ElementKeyword!]!
+  elements_search(
+    filter: ElementFilterInput
+    orderBy: ElementSearchOrderByInput
+    paging: PagingInput
+  ): ElementSearchResult!
+  elements(
+    filter: ElementFilterInput
+    orderBy: ElementOrderByInput
+    paging: PagingInput
+  ): [Element!]!
+  elementsCount(filter: ElementFilterInput): Int!
+  elements_recent(paging: PagingInput): [Element!]!
+  elements_recentCount: Int
+  files_getFileInfo(filePath: String!): FileInfo!
+  libraries_search(
+    filter: LibrariesFilterInput
+    orderBy: LibrariesSearchOrderByInput
+    paging: PagingInput
+  ): LibrariesSearchResult!
+  library(id: String!): Library
+  libraries_versions_search(
+    filter: LibraryVersionsFilterInput
+    paging: PagingInput
+  ): LibraryVersionsSearchResult!
+  libraries_version(id: String!): LibraryVersion
+  library_genres_search(
+    filter: LibraryGenreFilterInput
+    paging: PagingInput
+  ): LibraryGeneresSearchResult!
+  library_genre(id: String!): LibraryGenre
+  l10n_searchLanguages(
+    filter: LanguageFilterInput
+    paging: PagingInput
+  ): LanguagesSearchResult!
+  l10n_language(id: String!): Language
+  l10n_translateText(text: String!, toLang: String!): String
+  l10n_searchProjects(
+    filter: L10nProjectFilterInput
+    paging: PagingInput
+  ): L10nProjectsSearchResult!
+  l10n_project(id: String!): L10nProject
+  l10n_searchStrings(
+    filter: L10nStringFilterInput
+    paging: PagingInput
+  ): L10nStringsSearchResult!
+  l10n_string(id: String!): L10nString
+  metrics_entityDownloads(
+    filter: EntityDownloadMetricsFilter!
+  ): [EntityDownloadMetric!]!
+  metrics_itemDownloads(
+    filter: ItemDownloadMetricsFilter!
+  ): [ItemDownloadMetric!]!
+  metrics_monthly_totalDownloadsAndEstimatedCostSavings(
+    numberOfMonths: Int!
+  ): [MonthlyDownloadMetric!]!
+  metrics_allTimeDownloadsAndSavingsMetrics: AllTimeDownloadMetrics!
+  metrics_tracker_stats: TrackerStatistics!
+  projects_search(
+    filter: ProjectFilterInput
+    orderBy: ProjectSearchOrderByInput
+    paging: PagingInput
+  ): ProjectsSearchResult!
+  project(id: String!): Project
+  tutorials_search(
+    filter: TutorialFilterInput
+    orderBy: TutorialSearchOrderByInput
+    paging: PagingInput
+  ): TutorialsSearchResult!
+  tutorial(id: String!): Tutorial
+  userActivities_search(
+    filter: UserActivityEventFilterInput
+    orderBy: UserActivityOrderByInput
+    paging: PagingInput
+  ): UserActivityEventSearchResult!
+  userActivity(id: String!): UserActivityEvent
+}
+
+input Application_L10nInput {
+  l10n_langId: String!
+  description: String
+  heroText: String
+}
+
+input ApplicationInput {
+  id: String!
+  name: String!
+  description: String
+  imageFilePath: String
+  isHero: Boolean
+  heroImageFilePath: String
+  heroText: String
+  isHidden: Boolean
+  l10n: [Application_L10nInput!]
+}
+
+input ApplicationCreateInput {
+  id: String!
+  name: String!
+}
+
+input ApplicationInfoInput {
+  name: String!
+  description: String
+  imageFilePath: String
+  isHero: Boolean
+  heroImageFilePath: String
+  heroText: String
+  isHidden: Boolean
+  l10n: [Application_L10nInput!]
+}
+
+type Mutation {
+  applications_updateInfo(
+    applicationId: String!
+    info: ApplicationInfoInput!
+  ): Application
+  applications_create(application: ApplicationCreateInput!): Application
+  applications_delete(ids: [String!]!): [Application!]!
+  applications_updateOrCreateMacApp(
+    applicationId: String!
+    macApp: MacApplicationInput!
+  ): Application!
+  applications_deleteMacApp(applicationId: String!): Application
+  applications_updateOrCreateWinApp(
+    applicationId: String!
+    winApp: WindowsApplicationInput!
+  ): Application!
+  applications_deleteWinApp(applicationId: String!): Application
+  applications_updateOrCreateLinuxApp(
+    applicationId: String!
+    linuxApp: LinuxApplicationInput!
+  ): Application!
+  applications_deleteLinuxApp(applicationId: String!): Application
+  applications_translateAllFields(id: String!): Application!
+  applications_createLinuxAppVersion(
+    appId: String!
+    version: LinuxAppVersionInput!
+  ): LinuxAppVersion!
+  applications_updateLinuxAppVersion(
+    id: String!
+    version: LinuxAppVersionInput!
+  ): LinuxAppVersion!
+  applications_deleteLinuxAppVersions(
+    versionIds: [String!]!
+  ): [LinuxAppVersion!]!
+  applications_releaseLinuxAppVersion(id: String!): LinuxAppVersion!
+  applications_createMacAppVersion(
+    appId: String!
+    version: MacAppVersionInput!
+  ): MacAppVersion!
+  applications_updateMacAppVersion(
+    id: String!
+    version: MacAppVersionInput!
+  ): MacAppVersion!
+  applications_deleteMacAppVersions(versionIds: [String!]!): [MacAppVersion!]!
+  applications_releaseMacAppVersion(id: String!): MacAppVersion!
+  applications_createWindowsAppVersion(
+    appId: String!
+    version: WindowsAppVersionInput!
+  ): WindowsAppVersion!
+  applications_updateWindowsAppVersion(
+    id: String!
+    version: WindowsAppVersionInput!
+  ): WindowsAppVersion!
+  applications_deleteWindowsAppVersions(
+    versionIds: [String!]!
+  ): [WindowsAppVersion!]!
+  applications_releaseWindowsAppVersion(id: String!): WindowsAppVersion!
+  bundles_create(bundle: BundleInput!): Bundle!
+  bundles_update(id: String!, bundle: BundleInput!): Bundle!
+  bundles_translateAllFields(id: String!): Bundle!
+  bundles_delete(ids: [String!]!): [Bundle!]!
+  bundles_addItem(bundleId: String!, bundleItem: BundleItemInput!): BundleItem
+  bundles_deleteItems(bundleId: String!, items: [BundleItemInput!]!): Bundle!
+  effects_create(effect: EffectInput!): Effect!
+  effects_update(id: String!, effect: EffectInput!): Effect!
+  effects_delete(ids: [String!]!): [String!]!
+  effects_translateAllFields(id: String!): Effect!
+  effects_createVersion(
+    effectId: String!
+    generalInput: EffectVersionInput!
+  ): EffectVersion!
+  effects_deleteVersions(ids: [String!]!): [EffectVersion!]!
+  effects_duplicateVersion(
+    effectId: String!
+    effect: EffectVersionCreateInput!
+    sourceVersionId: String!
+  ): EffectVersion!
+  effects_updateVersionGeneral(
+    versionId: String!
+    generalInput: EffectVersionInput!
+  ): EffectVersion!
+  effects_releaseVersion(versionId: String!): EffectVersion
+  effects_releaseVersionAsBeta(versionId: String!): EffectVersion
+  effects_translateAllVersionFields(id: String!): EffectVersion!
+  elements_deleteElement(id: String!): String
+  elements_deleteElements(ids: [String!]!): [String!]!
+
+  """
+  Repopulate the recent_elements db container with up-to-date elements. Returns number of added elements.
+  """
+  elements_updateRecent: Int
+  elements_run_indexer: Boolean
+  libraries_create(library: LibraryInput!): Library!
+  libraries_update(id: String!, library: LibraryInput!): Library!
+  libraries_delete(ids: [String!]!): [Library!]!
+  libraries_translateAllFields(id: String!): Library!
+  libraries_duplicateVersion(
+    libraryId: String!
+
+    """
+    Id of the library version which will be used as a template for the new version
+    """
+    sourceVersionId: String!
+  ): LibraryVersion!
+  libraries_createVersion(
+    libraryId: String!
+    generalInput: LibraryVersionGeneralInput!
+  ): LibraryVersion!
+  libraries_updateVersionGeneral(
+    versionId: String!
+    generalInput: LibraryVersionGeneralInput!
+  ): LibraryVersion!
+  libraries_deleteVersions(ids: [String!]!): [LibraryVersion!]!
+  libraries_releaseVersion(versionId: String!): LibraryVersion
+  libraries_releaseVersionAsBeta(versionId: String!): LibraryVersion
+  libraries_translateAllLibVersionFields(id: String!): LibraryVersion!
+  libraries_addInstrument(
+    libVersionId: String!
+    instrument: InstrumentInput!
+  ): Instrument
+  libraries_updateInstrument(
+    libVersionId: String!
+    instrumentId: Int!
+    instrument: InstrumentInput!
+  ): Instrument
+  libraries_deleteInstruments(
+    libVersionId: String!
+    instrumentIds: [Int!]!
+  ): LibraryVersion!
+  library_genres_create(genre: LibraryGenreInput!): LibraryGenre!
+  library_genres_update(id: String!, genre: LibraryGenreInput!): LibraryGenre!
+  library_genres_delete(ids: [String!]!): [String!]!
+  l10n_createLanguage(language: LanguageInput!): Language!
+  l10n_deleteLanguages(ids: [String!]!): [Language!]!
+  l10n_createProject(project: L10nProjectInput!): L10nProject!
+  l10n_updateProject(id: String!, project: L10nProjectInput!): L10nProject!
+  l10n_deleteProjects(ids: [String!]!): [L10nProject!]!
+  l10n_createString(string: L10nStringInput!): L10nString!
+  l10n_updateString(id: String!, string: L10nStringInput!): L10nString!
+  l10n_deleteStrings(ids: [String!]!): [L10nString!]!
+  l10n_createOrUpdateStringTranslation(
+    stringId: String!
+    translation: L10nTranslationInput!
+  ): L10nString!
+  l10n_deleteTranslation(stringId: String!, languageId: String!): L10nString!
+  l10n_translateAllStringsInProject(projectId: String!): Int
+  l10n_updateProjectStrings(
+    projectId: String!
+    strings: [L10nProjectUpdateStringInput!]!
+  ): ProjectStringsUpdateResult!
+  projects_create(project: ProjectInput!): Project!
+  projects_update(id: String!, project: ProjectInput!): Project!
+  projects_translateAllFields(id: String!): Project!
+  projects_delete(ids: [String!]!): [Project!]!
+  tutorials_create(tutorial: TutorialInput!): Tutorial!
+  tutorials_update(id: String!, tutorial: TutorialInput!): Tutorial!
+  tutorials_delete(ids: [String!]!): [Tutorial!]!
+  tutorials_translateAllFields(id: String!): Tutorial!
+  userActivities_create_itemCreateActivity(
+    event: ItemCreateUserActivityEventInput!
+  ): UserActivityEvent!
+  userActivities_create_itemDeleteActivity(
+    event: ItemDeleteUserActivityEventInput!
+  ): UserActivityEvent!
+  userActivities_create_itemUpdateActivity(
+    event: ItemUpdateUserActivityEventInput!
+  ): UserActivityEvent!
+  userActivities_delete(ids: [String!]!): [UserActivityEvent!]!
+}
+
+type LinuxAppVersion {
+  id: String!
+  applicationId: String!
+  version: String!
+  buildNumber: Int
+  status: ApplicationVersionStatus!
+  createdDate: String!
+  buildFilePath: String!
+  versionFull: String!
+  buildFileMusedownloadUrl: String
+}
+
+input LinuxAppVersionInput {
+  version: String!
+  buildNumber: Int!
+  status: ApplicationVersionStatus!
+  buildFilePath: String!
+}
+
+type LinuxApplication {
+  applicationId: String!
+  versions(paging: PagingInput): LinuxAppVersionsResult!
+  latestVersion: LinuxAppVersion
+  latestBetaVersion: LinuxAppVersion
+}
+
+input LinuxApplicationInput {
+  linuxAppId: String
+}
+
+type LinuxAppVersionsResult {
+  totalCount: Int!
+  items: [LinuxAppVersion!]!
+}
+
+type MacAppVersion {
+  id: String!
+  applicationId: String!
+  version: String!
+  buildNumber: Int
+  status: ApplicationVersionStatus!
+  createdDate: String!
+  buildFilePath: String!
+  versionFull: String!
+  buildFileMusedownloadUrl: String
+}
+
+input MacAppVersionInput {
+  version: String!
+  buildNumber: Int!
+  status: ApplicationVersionStatus!
+  buildFilePath: String!
+}
+
+type MacApplication {
+  bundleID: String
+  appStoreUrl: String
+  applicationId: String!
+  versions(paging: PagingInput): MacAppVersionsResult!
+  latestVersion: MacAppVersion
+  latestBetaVersion: MacAppVersion
+}
+
+input MacApplicationInput {
+  bundleID: String
+  appStoreUrl: String
+}
+
+type MacAppVersionsResult {
+  totalCount: Int!
+  items: [MacAppVersion!]!
+}
+
+enum WinApplicationType {
+  MSI
+  EXE
+  MSIX
+}
+
+type WindowsAppVersion {
+  id: String!
+  applicationId: String!
+  version: String!
+  buildNumber: Int
+  status: ApplicationVersionStatus!
+  createdDate: String!
+  buildFilePath: String!
+  installArgs: String
+  appType: WinApplicationType!
+  versionFull: String!
+  buildFileMusedownloadUrl: String
+}
+
+input WindowsAppVersionInput {
+  version: String!
+  buildNumber: Int!
+  status: ApplicationVersionStatus!
+  installArgs: String
+  appType: WinApplicationType!
+  buildFilePath: String!
+}
+
+type WindowsApplication {
+  MSIXPackageID: String
+  isMicrosoftStoreApp: Boolean
+  applicationId: String!
+  versions(paging: PagingInput): WindowsAppVersionsResult!
+  latestVersion: WindowsAppVersion
+  latestBetaVersion: WindowsAppVersion
+}
+
+input WindowsApplicationInput {
+  MSIXPackageID: String
+  isMicrosoftStoreApp: Boolean
+}
+
+type WindowsAppVersionsResult {
+  totalCount: Int!
+  items: [WindowsAppVersion!]!
+}
+
+enum BundleItemType {
+  application
+  library
+  effect
+}
+
+type BundleItem {
+  itemType: BundleItemType!
+  itemId: String!
+  typeTitle: String
+  title: String
+  imageUrl: String
+  imageMirrorUrls: [String!]
+}
+
+type Bundle {
+  id: String!
+  title(locale: LocaleFilter): String!
+  description(locale: LocaleFilter): String
+  imageFilePath: String
+  isHero: Boolean
+  heroImageFilePath: String
+  heroText(locale: LocaleFilter): String
+  items: [BundleItem!]!
+  l10n: [Bundle_L10n!]
+  updatedDate: String!
+  createdDate: String!
+  imageUrl: String
+  imageMirrorUrls: [String!]!
+  heroImageUrl: String
+  heroImageMirrorUrls: [String!]
+}
+
+type Bundle_L10n implements L10n {
+  l10n_langId: String!
+  title: String
+  description: String
+  heroText: String
+}
+
+input Bundle_L10nInput {
+  l10n_langId: String!
+  title: String
+  description: String
+  heroText: String
+}
+
+input BundleItemInput {
+  itemType: BundleItemType!
+  itemId: String!
+}
+
+input BundleInput {
+  title: String!
+  description: String
+  imageFilePath: String
+  isHero: Boolean
+  heroImageFilePath: String
+  heroText: String
+  l10n: [Bundle_L10nInput!]
+}
+
+type BundlesSearchResult {
+  items: [Bundle!]!
+  totalCount: Int!
+}
+
+input BundleFilterInput {
+  search: String
+}
+
+enum BundleSearchOrderByField {
+  title
+  updatedDate
+}
+
+input BundleSearchOrderByInput {
+  field: BundleSearchOrderByField!
+  direction: OrderDirection!
+}
+
+enum EntityType {
+  library
+  libraryVersion
+  effect
+  effectVersion
+  bundle
+  application
+  applicationMacVersion
+  applicationWinVersion
+  applicationLinuxVersion
+  element
+  project
+  tutorial
+  l10nLanguage
+  l10nProject
+  l10nString
+  l10nTranslation
+}
+
+input LocaleFilter {
+  locale: String
+  osxLocale: String
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+input PagingInput {
+  offset: Int!
+  limit: Int!
+}
+
+type Effect {
+  id: String!
+  title(locale: LocaleFilter): String!
+  imageFilePath: String
+  updatedDate: String!
+  createdDate: String!
+  l10n: [Effect_L10n!]
+  latestReleasedVersion: EffectVersion
+  latestBetaVersion: EffectVersion
+  latestDraftVersion: EffectVersion
+  imageUrl: String
+  imageMirrorUrls: [String!]!
+  genre: LibraryGenre
+}
+
+type Effect_L10n implements L10n {
+  l10n_langId: String!
+  title: String
+}
+
+input EffectInput {
+  title: String!
+  imageFilePath: String
+  l10n: [Effect_L10nInput!]
+}
+
+input Effect_L10nInput {
+  l10n_langId: String!
+  title: String
+}
+
+type EffectVersion {
+  id: String!
+  effectId: String!
+  status: EffectVersionStatus!
+  version: String!
+  description(locale: LocaleFilter): String
+  releaseDate: String
+  macResourcesFilePath: String
+  winResourcesFilePath: String
+  updatedDate: String!
+  createdDate: String!
+  l10n: [EffectVersion_L10n!]
+  macResourcesMusedownloadUrl: String
+  winResourcesMusedownloadUrl: String
+}
+
+type EffectVersion_L10n implements L10n {
+  l10n_langId: String!
+  description: String
+}
+
+input EffectVersionCreateInput {
+  version: String!
+}
+
+input EffectVersion_L10nInput {
+  l10n_langId: String!
+  description: String
+}
+
+input EffectVersionInput {
+  version: String!
+  description: String
+  macResourcesFilePath: String
+  winResourcesFilePath: String
+  l10n: [EffectVersion_L10nInput!]
+}
+
+enum EffectVersionStatus {
+  draft
+  beta
+  released
+}
+
+type EffectsSearchResult {
+  items: [Effect!]!
+  totalCount: Int!
+}
+
+input EffectFilterInput {
+  search: String
+  ids: [String!]
+}
+
+type EffectVersionsSearchResult {
+  items: [EffectVersion!]!
+  totalCount: Int!
+}
+
+input EffectVersionsFilterInput {
+  effectId: String!
+  search: String
+  status: EffectVersionStatus
+}
+
+enum EffectSearchOrderByField {
+  title
+  updatedDate
+}
+
+input EffectSearchOrderByInput {
+  field: EffectSearchOrderByField!
+  direction: OrderDirection!
+}
+
+type ElementAlbum {
+  id: String!
+  title: String!
+  elementsCount: Int!
+}
+
+input ElementAlbumFilterInput {
+  search: String
+}
+
+type ElementGenre {
+  id: String!
+  title: String!
+  elementsCount: Int!
+}
+
+input ElementGenreFilterInput {
+  search: String
+}
+
+type ElementInstrument {
+  id: String!
+  title: String!
+  elementsCount: Int!
+}
+
+input ElementInstrumentFilterInput {
+  search: String
+}
+
+type ElementKeyword {
+  id: String!
+  title: String!
+  elementsCount: Int!
+}
+
+input ElementKeywordFilterInput {
+  search: String
+}
+
+type Element {
+  id: String!
+  title: String!
+  album: String
+  artists: [String!]!
+  genres: [String!]!
+  publisher: String
+  duration: Float!
+  bpm: Float
+  key: String
+  instrument: String
+  type: ElementType!
+  keywords: [String!]!
+  deleted: Boolean
+  updatedDate: String!
+  opusFileUrl: String!
+  opusFileMirrorUrls: [String!]!
+  imageFileUrl: String!
+  imageFileMirrorUrls: [String!]!
+}
+
+type ElementSearchResult {
+  elements: [Element!]!
+  elementsCount: Int!
+  keywords: [ElementKeyword!]!
+}
+
+enum ElementType {
+  one_shot
+  loop
+}
+
+enum ElementOrderByField {
+  title
+  artist
+  category
+  duration
+  tempo
+  key
+  updatedDate
+}
+
+enum ElementSearchOrderByField {
+  title
+  updatedDate
+}
+
+input BpmRange {
+  from: Float!
+  to: Float!
+}
+
+input ElementFilterInput {
+  search: String
+  ids: [String!]
+  album: String
+  artists: [String!]
+  genres: [String!]
+  publisher: String
+  key: String
+  bpmExact: Float
+  bpmRange: BpmRange
+  instrument: String
+  keywords: [String!]
+  type: String
+}
+
+input ElementOrderByInput {
+  field: ElementOrderByField!
+  direction: OrderDirection!
+}
+
+input ElementSearchOrderByInput {
+  field: ElementSearchOrderByField!
+  direction: OrderDirection!
+}
+
+type FileInfo {
+  uploadDate: String!
+  size: Float!
+}
+
+type Library {
+  id: String!
+  name: String!
+  title(locale: LocaleFilter): String!
+  imageFilePath: String
+  logoImageFilePath: String
+  appStorePurchaseIds: [String!]!
+  isHero: Boolean
+  heroImageFilePath: String
+  heroText(locale: LocaleFilter): String
+  updatedDate: String!
+  createdDate: String!
+  l10n: [Library_L10n!]
+  latestReleasedVersion: LibraryVersion
+  latestBetaVersion: LibraryVersion
+  latestDraftVersion: LibraryVersion
+  imageUrl: String
+  imageMirrorUrls: [String!]!
+  logoImageUrl: String
+  logoImageMirrorUrls: [String!]!
+  heroImageUrl: String
+  heroImageMirrorUrls: [String!]!
+}
+
+type Library_L10n implements L10n {
+  l10n_langId: String!
+  title: String
+  heroText: String
+}
+
+input Library_L10nInput {
+  l10n_langId: String!
+  title: String
+  heroText: String
+}
+
+input LibraryInput {
+  name: String!
+  title: String!
+  imageFilePath: String
+  logoImageFilePath: String
+  appStorePurchaseIds: [String!]!
+  isHero: Boolean
+  heroImageFilePath: String
+  heroText: String
+  l10n: [Library_L10nInput!]
+}
+
+enum LibraryVersionStatus {
+  draft
+  processingBeta
+  beta
+  processingRelease
+  released
+}
+
+type LibraryVersion {
+  id: String!
+  libraryId: String!
+  status: LibraryVersionStatus!
+  version: String
+  overview(locale: LocaleFilter): String
+  features(locale: LocaleFilter): [String!]!
+  demos: [LibraryDemo!]!
+  genreId: String
+  releaseDate: String
+  partner: String
+  partnerWebsite: String
+  instruments: [Instrument!]!
+  packageFilePath: String
+  packageFileSize: Float
+  packageHash: String
+  l10n: [LibraryVersion_L10n!]
+  updatedDate: String!
+  createdDate: String!
+  packageMusedownloadUrl: String
+  genre: LibraryGenre
+  downloadSize: Float
+}
+
+type LibraryVersion_L10n implements L10n {
+  l10n_langId: String!
+  overview: String
+  features: [String]
+}
+
+type LibraryDemo_L10n implements L10n {
+  l10n_langId: String!
+  title: String
+}
+
+type LibraryDemo {
+  title(locale: LocaleFilter): String!
+  type: String!
+  featured: Boolean!
+  url: String!
+  l10n: [LibraryDemo_L10n!]
+}
+
+input LibraryDemo_L10nInput {
+  l10n_langId: String!
+  title: String
+}
+
+input LibraryDemoInput {
+  title: String!
+  type: String!
+  featured: Boolean!
+  url: String!
+  l10n: [LibraryDemo_L10nInput!]
+}
+
+input LibraryVersionGeneral_L10nInput {
+  l10n_langId: String!
+  overview: String
+  features: [String]
+}
+
+input LibraryVersionGeneralInput {
+  version: String
+  overview: String
+  features: [String!]!
+  demos: [LibraryDemoInput!]!
+  genreId: String
+  partner: String
+  partnerWebsite: String
+  l10n: [LibraryVersionGeneral_L10nInput!]
+}
+
+type Instrument {
+  id: Int!
+  directoryPath: String!
+  name(locale: LocaleFilter): String!
+  category: String!
+  abbreviation: String!
+  definitionFilePath: String!
+  samplesFilePath: String
+  l10n: [Instrument_L10n!]
+}
+
+type Instrument_L10n implements L10n {
+  l10n_langId: String!
+  name: String
+}
+
+input Instrument_L10nInput {
+  l10n_langId: String!
+  name: String
+}
+
+input InstrumentInput {
+  directoryPath: String!
+  name: String!
+  category: String!
+  abbreviation: String!
+  definitionFilePath: String!
+  samplesFilePath: String
+  l10n: [Instrument_L10nInput!]
+}
+
+type LibrariesSearchResult {
+  items: [Library!]!
+  totalCount: Int!
+}
+
+input LibrariesFilterInput {
+  search: String
+  ids: [String!]
+}
+
+type LibraryVersionsSearchResult {
+  items: [LibraryVersion!]!
+  totalCount: Int!
+}
+
+input LibraryVersionsFilterInput {
+  libraryId: String!
+  search: String
+  status: LibraryVersionStatus
+  statuses: [LibraryVersionStatus!]
+}
+
+enum LibrariesSearchOrderByField {
+  title
+  updatedDate
+}
+
+input LibrariesSearchOrderByInput {
+  field: LibrariesSearchOrderByField!
+  direction: OrderDirection!
+}
+
+type LibraryGenre {
+  id: String!
+  title: String!
+  imageFilePath: String!
+  updatedDate: String!
+  createdDate: String!
+  imageUrl: String
+  imageMirrorUrls: [String!]!
+}
+
+input LibraryGenreInput {
+  title: String!
+  imageFilePath: String!
+}
+
+type LibraryGeneresSearchResult {
+  items: [LibraryGenre!]!
+  totalCount: Int!
+}
+
+input LibraryGenreFilterInput {
+  search: String
+}
+
+type Language {
+  id: String!
+  name: String!
+  locale: String!
+  osxCode: String!
+  osxLocale: String!
+}
+
+input LanguageInput {
+  id: String!
+  name: String!
+  locale: String!
+  osxCode: String!
+  osxLocale: String!
+}
+
+interface L10n {
+  l10n_langId: String!
+}
+
+input LanguageFilterInput {
+  ids: [String!]
+  locale: String
+  osxCode: String
+  osxLocale: String
+}
+
+type LanguagesSearchResult {
+  items: [Language!]!
+  totalCount: Int!
+}
+
+type L10nProjectsSearchResult {
+  items: [L10nProject!]!
+  totalCount: Int!
+}
+
+type L10nStringsSearchResult {
+  items: [L10nString!]!
+  totalCount: Int!
+}
+
+type L10nTranslationsSearchResult {
+  items: [L10nTranslation!]!
+  totalCount: Int!
+}
+
+input L10nProjectUpdateStringInput {
+  code: String!
+  text: String!
+  context: String
+  tags: [String!]
+}
+
+type ProjectStringsUpdateResult {
+  created: Int!
+  updated: Int!
+  deleted: Int!
+}
+
+type L10nTranslation {
+  languageId: String!
+  text: String!
+}
+
+input L10nTranslationInput {
+  languageId: String!
+  text: String!
+}
+
+type L10nString {
+  id: String!
+  projectId: String!
+  code: String!
+  text: String!
+  context: String
+  contextImageFilePath: String
+  tags: [String!]
+  translations: [L10nTranslation!]!
+  updatedDate: String!
+  createdDate: String!
+}
+
+input L10nStringFilterInput {
+  projectId: String
+  search: String
+  tags: [String!]
+}
+
+input L10nStringInput {
+  projectId: String!
+  code: String!
+  text: String!
+  context: String
+  contextImageFilePath: String
+  tags: [String!]
+  translations: [L10nTranslationInput!]!
+}
+
+type L10nProject {
+  id: String!
+  name: String!
+  languageIds: [String!]!
+  updatedDate: String!
+  createdDate: String!
+}
+
+input L10nProjectFilterInput {
+  search: String
+}
+
+input L10nProjectInput {
+  id: String!
+  name: String!
+  languageIds: [String!]!
+}
+
+enum TimeUnit {
+  day
+  hour
+  minute
+  second
+}
+
+input TimeDurationInput {
+  unit: TimeUnit!
+  amount: Float!
+}
+
+type EntityDownloadMetricInterval {
+  startDate: String!
+  count: Int!
+  sizeSumGBs: Float!
+}
+
+type EntityDownloadMetric {
+  entityType: EntityType!
+  intervals: [EntityDownloadMetricInterval!]!
+}
+
+type ItemDownloadMetricInterval {
+  startDate: String!
+  count: Int!
+  sizeSumGBs: Float!
+}
+
+type ItemDownloadMetric {
+  itemId: String!
+  intervals: [ItemDownloadMetricInterval!]!
+}
+
+type MonthlyDownloadMetric {
+  year: Int!
+  month: Int!
+  downloadedGBs: Float!
+  estimatedCostSavings: Float!
+}
+
+type AllTimeDownloadMetrics {
+  downloadedSize: String!
+  bandwidthCostSavings: Float!
+}
+
+input ItemDownloadMetricsFilter {
+  entityType: EntityType!
+  itemIds: [String!]!
+  binIntervalDuration: TimeDurationInput
+  dateFrom: String!
+  dateTo: String!
+}
+
+input EntityDownloadMetricsFilter {
+  dateFrom: String!
+  dateTo: String!
+  binIntervalDuration: TimeDurationInput
+  entityTypes: [EntityType!]!
+}
+
+input HubDownloadEventFilter {
+  dateFrom: String
+  dateTo: String
+}
+
+type TrackerStatistics {
+  torrentsCount: Int!
+  activeTorrents: Int!
+  peersAll: Int!
+  peersSeederOnly: Int!
+}
+
+type Project {
+  id: String!
+  title(locale: LocaleFilter): String!
+  description(locale: LocaleFilter): String
+  imageFilePath: String
+  projectFilePath: String
+  l10n: [Project_L10n!]
+  updatedDate: String!
+  createdDate: String!
+  imageUrl: String
+  imageMirrorUrls: [String!]!
+  projectFileUrl: String
+  projectFileMirrorUrls: [String!]!
+}
+
+type Project_L10n implements L10n {
+  l10n_langId: String!
+  title: String
+  description: String
+}
+
+input Project_L10nInput {
+  l10n_langId: String!
+  title: String
+  description: String
+}
+
+input ProjectInput {
+  title: String!
+  description: String
+  imageFilePath: String
+  projectFilePath: String
+  l10n: [Project_L10nInput!]
+}
+
+type ProjectsSearchResult {
+  items: [Project!]!
+  totalCount: Int!
+}
+
+input ProjectFilterInput {
+  search: String
+}
+
+enum ProjectSearchOrderByField {
+  title
+  updatedDate
+}
+
+input ProjectSearchOrderByInput {
+  field: ProjectSearchOrderByField!
+  direction: OrderDirection!
+}
+
+type Tutorial {
+  id: String!
+  title(locale: LocaleFilter): String!
+  description(locale: LocaleFilter): String
+  imageFilePath: String
+  videoUrl: String
+  isFeatured: Boolean
+  updatedDate: String!
+  createdDate: String!
+  l10n: [Tutorial_L10n!]
+  imageUrl: String
+  imageMirrorUrls: [String!]!
+}
+
+type Tutorial_L10n implements L10n {
+  l10n_langId: String!
+  title: String
+  description: String
+}
+
+input Tutorial_L10nInput {
+  l10n_langId: String!
+  title: String
+  description: String
+}
+
+input TutorialInput {
+  title: String!
+  description: String
+  imageFilePath: String
+  videoUrl: String
+  isFeatured: Boolean
+  l10n: [Tutorial_L10nInput!]
+}
+
+type TutorialsSearchResult {
+  items: [Tutorial!]!
+  totalCount: Int!
+}
+
+input TutorialFilterInput {
+  search: String
+}
+
+enum TutorialSearchOrderByField {
+  title
+  updatedDate
+}
+
+input TutorialSearchOrderByInput {
+  field: TutorialSearchOrderByField!
+  direction: OrderDirection!
+}
+
+enum ActivityType {
+  ItemCreateActivity
+  ItemDeleteActivity
+  ItemUpdateActivity
+}
+
+interface EntityActivity {
+  activityType: ActivityType!
+  itemType: EntityType!
+  itemId: String!
+  itemTitle: String!
+}
+
+type ItemCreateActivity implements EntityActivity {
+  activityType: ActivityType!
+  itemType: EntityType!
+  itemId: String!
+  itemTitle: String!
+  createdItemJSON: String!
+}
+
+input ItemCreateActivityInput {
+  itemType: EntityType!
+  itemId: String!
+  itemTitle: String!
+  createdItemJSON: String!
+}
+
+type ItemDeleteActivity implements EntityActivity {
+  activityType: ActivityType!
+  itemType: EntityType!
+  itemId: String!
+  itemTitle: String!
+  deletedItemJSON: String!
+}
+
+input ItemDeleteActivityInput {
+  itemType: EntityType!
+  itemId: String!
+  itemTitle: String!
+  deletedItemJSON: String!
+}
+
+type ItemUpdateActivity implements EntityActivity {
+  activityType: ActivityType!
+  itemType: EntityType!
+  itemId: String!
+  itemTitle: String!
+  oldItemJSON: String!
+  newItemJSON: String!
+}
+
+input ItemUpdateActivityInput {
+  itemType: EntityType!
+  itemId: String!
+  itemTitle: String!
+  oldItemJSON: String!
+  newItemJSON: String!
+}
+
+union UserActivity =
+    ItemCreateActivity
+  | ItemDeleteActivity
+  | ItemUpdateActivity
+
+type UserActivityEvent {
+  id: String!
+  date: String!
+  userId: String!
+  userName: String!
+  activity: UserActivity!
+}
+
+input ItemCreateUserActivityEventInput {
+  date: String!
+  userId: String!
+  userName: String!
+  activity: ItemCreateActivityInput!
+}
+
+input ItemDeleteUserActivityEventInput {
+  date: String!
+  userId: String!
+  userName: String!
+  activity: ItemDeleteActivityInput!
+}
+
+input ItemUpdateUserActivityEventInput {
+  date: String!
+  userId: String!
+  userName: String!
+  activity: ItemUpdateActivityInput!
+}
+
+type UserActivityEventSearchResult {
+  items: [UserActivityEvent!]!
+  totalCount: Int!
+}
+
+input UserActivityEventFilterInput {
+  userId: String
+  entityType: EntityType
+  itemId: String
+  dateFrom: String
+  dateTo: String
+}
+
+enum UserActivityOrderByField {
+  date
+}
+
+input UserActivityOrderByInput {
+  field: UserActivityOrderByField!
+  direction: OrderDirection!
+}
+
+input AdditionalEntityFields {
+  path: String
+  type: String
+}

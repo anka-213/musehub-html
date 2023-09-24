@@ -14,6 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  query MuseSampler($name: String!) {\n    application(id: $name) {\n      imageUrl\n      macApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n      windowsApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n      linuxApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n    }\n  }\n": types.MuseSamplerDocument,
+    "\n  query Soundfonts {\n    libraries_search(\n      filter: {}\n      orderBy: { field: title, direction: asc }\n      paging: { offset: 0, limit: 10 }\n    ) {\n      items {\n        name\n        logoImageUrl\n        latestReleasedVersion {\n          version\n          downloadSize\n          overview\n          packageMusedownloadUrl\n        }\n      }\n    }\n  }\n": types.SoundfontsDocument,
 };
 
 /**
@@ -34,6 +35,10 @@ export function graphql(source: string): unknown;
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query MuseSampler($name: String!) {\n    application(id: $name) {\n      imageUrl\n      macApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n      windowsApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n      linuxApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query MuseSampler($name: String!) {\n    application(id: $name) {\n      imageUrl\n      macApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n      windowsApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n      linuxApp {\n        latestVersion {\n          id\n          version\n          buildFileMusedownloadUrl\n        }\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query Soundfonts {\n    libraries_search(\n      filter: {}\n      orderBy: { field: title, direction: asc }\n      paging: { offset: 0, limit: 10 }\n    ) {\n      items {\n        name\n        logoImageUrl\n        latestReleasedVersion {\n          version\n          downloadSize\n          overview\n          packageMusedownloadUrl\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query Soundfonts {\n    libraries_search(\n      filter: {}\n      orderBy: { field: title, direction: asc }\n      paging: { offset: 0, limit: 10 }\n    ) {\n      items {\n        name\n        logoImageUrl\n        latestReleasedVersion {\n          version\n          downloadSize\n          overview\n          packageMusedownloadUrl\n        }\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

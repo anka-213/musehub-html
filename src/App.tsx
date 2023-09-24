@@ -5,6 +5,7 @@ import "./App.css";
 import { useQuery } from "@apollo/client";
 import { graphql } from "./gql/gql";
 import * as parseTorrent from "parse-torrent";
+import { filesize } from "filesize";
 
 // const GET_LOCATIONS = gql`
 //   query GetLocations {
@@ -40,6 +41,27 @@ const GET_MUSESAMPLER = graphql(`
           id
           version
           buildFileMusedownloadUrl
+        }
+      }
+    }
+  }
+`);
+
+const GET_SOUNDFONTS = graphql(`
+  query Soundfonts {
+    libraries_search(
+      filter: {}
+      orderBy: { field: title, direction: asc }
+      paging: { offset: 0, limit: 10 }
+    ) {
+      items {
+        name
+        logoImageUrl
+        latestReleasedVersion {
+          version
+          downloadSize
+          overview
+          packageMusedownloadUrl
         }
       }
     }
@@ -93,7 +115,87 @@ async function makeMagnet(downloadUrl: string) {
   console.log(magnet);
   window.location.href = magnet;
 }
+function DisplaySoundfonts() {
+  const { loading, error, data } = useQuery(GET_SOUNDFONTS);
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error : {error.message}</p>;
+  if (!data) return <p>Got no data</p>;
+
+  return (
+    <div>
+      <h2>Download soundfonts</h2>
+      {data.libraries_search.items.map((item) => {
+        if (!item?.latestReleasedVersion?.packageMusedownloadUrl)
+          return (
+            <h3>
+              <img src={item?.logoImageUrl ?? ""} alt="logo" width={100} />
+              {item.name}
+            </h3>
+          );
+        const latest = item.latestReleasedVersion;
+        const filename = `${item.name
+          .replaceAll(" ", "-")
+          .toLocaleLowerCase()}-${latest.version}.torrent`;
+        const humanSize = filesize(latest.downloadSize ?? 0);
+        return (
+          <div>
+            <h3>
+              <img src={item?.logoImageUrl ?? ""} alt="logo" width={100} />
+              {item.name}
+            </h3>
+            <ShowTorrent
+              filename={filename}
+              downloadUrl={
+                item?.latestReleasedVersion?.packageMusedownloadUrl ?? "no url"
+              }
+            />
+            <p>{humanSize}</p>
+            <small>{item?.latestReleasedVersion?.overview}</small>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+const ShowTorrent = ({
+  downloadUrl,
+  filename,
+}: {
+  downloadUrl: string;
+  filename: string;
+}) => (
+  <>
+    <a
+      href={downloadUrl}
+      download={filename}
+      onClick={(e) => {
+        e.preventDefault();
+        convertFiletoBlobAndDownload(downloadUrl, filename);
+      }}
+      className="App-link"
+    >
+      {filename}
+    </a>
+
+    <input
+      style={{
+        paddingLeft: "10px",
+      }}
+      type="image"
+      alt="Magnet link"
+      src={magnetIcon}
+      onClick={(e) => {
+        e.preventDefault();
+        makeMagnet(downloadUrl);
+      }}
+      className="App-link"
+    ></input>
+  </>
+);
+
+const linkStyle = {};
 function DisplayApp({ appName }: { appName: string }) {
   // const { _loading, _error, _data } = useQuery(GET_MUSESAMPLER);
   const { loading, error, data } = useQuery(GET_MUSESAMPLER, {
@@ -115,42 +217,17 @@ function DisplayApp({ appName }: { appName: string }) {
           if (!platData?.buildFileMusedownloadUrl)
             return (
               <div key={platform}>
-                <b>{platformName}: </b>No torrent avalable for this platform
+                <b>{platformName}: </b>No torrent available for this platform
               </div>
             );
           let { version, buildFileMusedownloadUrl } = platData;
           const downloadUrl = buildFileMusedownloadUrl;
           const filename = `${appName}-${platformName}-${version}.torrent`;
-          const linkStyle = {
-            paddingLeft: "10px",
-          };
 
           return (
             <div key={platform}>
               <b>{platformName}: </b>
-              <a
-                href={downloadUrl}
-                download={filename}
-                onClick={(e) => {
-                  e.preventDefault();
-                  convertFiletoBlobAndDownload(downloadUrl, filename);
-                }}
-                className="App-link"
-              >
-                {filename}
-              </a>
-
-              <input
-                style={linkStyle}
-                type="image"
-                alt="Magnet link"
-                src={magnetIcon}
-                onClick={(e) => {
-                  e.preventDefault();
-                  makeMagnet(downloadUrl);
-                }}
-                className="App-link"
-              ></input>
+              <ShowTorrent downloadUrl={downloadUrl} filename={filename} />
             </div>
           );
         })}
@@ -193,6 +270,7 @@ function App() {
         <DisplayApp appName="musesampler" />
         <br />
         <DisplayApp appName="musescore" />
+        <DisplaySoundfonts />
       </header>
     </div>
   );

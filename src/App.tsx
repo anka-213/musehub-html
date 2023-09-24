@@ -91,7 +91,7 @@ function DisplayLocations() {
         const downloadUrl = buildFileMusedownloadUrl;
         const filename = `musesampler-${platformName}-${version}.torrent`;
         return (
-          <div>
+          <div key={platform}>
             <h3>{platformName}</h3>
             <a
               href={downloadUrl}

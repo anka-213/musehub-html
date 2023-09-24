@@ -18,8 +18,9 @@ import * as parseTorrent from "parse-torrent";
 // `;
 
 const GET_MUSESAMPLER = graphql(`
-  query MuseSampler {
-    application(id: "musesampler") {
+  query MuseSampler($name: String!) {
+    application(id: $name) {
+      imageUrl
       macApp {
         latestVersion {
           id
@@ -93,9 +94,11 @@ async function makeMagnet(downloadUrl: string) {
   window.location.href = magnet;
 }
 
-function DisplayLocations() {
+function DisplayApp({ appName }: { appName: string }) {
   // const { _loading, _error, _data } = useQuery(GET_MUSESAMPLER);
-  const { loading, error, data } = useQuery(GET_MUSESAMPLER);
+  const { loading, error, data } = useQuery(GET_MUSESAMPLER, {
+    variables: { name: appName },
+  });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
@@ -103,48 +106,51 @@ function DisplayLocations() {
 
   return (
     <div>
-      {appTypes.map((platform) => {
-        let platData = data?.application?.[platform]?.latestVersion;
-        let platformName = platform.replace("App", "");
-        if (!platData) return <p>Got no data</p>;
-        let { id, version, buildFileMusedownloadUrl } = platData;
-        if (!buildFileMusedownloadUrl) return <p>Got no data</p>;
-        const downloadUrl = buildFileMusedownloadUrl;
-        const filename = `musesampler-${platformName}-${version}.torrent`;
-        const linkStyle = {
-          paddingLeft: "10px",
-        };
+      <img src={data.application?.imageUrl ?? ""} alt="logo" width={100} />
+      <h2>Download {appName}</h2>
+      <div>
+        {appTypes.map((platform) => {
+          let platData = data?.application?.[platform]?.latestVersion;
+          let platformName = platform.replace("App", "");
+          if (!platData) return <p>Got no data</p>;
+          let { version, buildFileMusedownloadUrl } = platData;
+          if (!buildFileMusedownloadUrl) return <p>Got no data</p>;
+          const downloadUrl = buildFileMusedownloadUrl;
+          const filename = `${appName}-${platformName}-${version}.torrent`;
+          const linkStyle = {
+            paddingLeft: "10px",
+          };
 
-        return (
-          <div key={platform}>
-            <b>{platformName}: </b>
-            <a
-              href={downloadUrl}
-              download={filename}
-              onClick={(e) => {
-                e.preventDefault();
-                convertFiletoBlobAndDownload(downloadUrl, filename);
-              }}
-              className="App-link"
-            >
-              {filename}
-            </a>
+          return (
+            <div key={platform}>
+              <b>{platformName}: </b>
+              <a
+                href={downloadUrl}
+                download={filename}
+                onClick={(e) => {
+                  e.preventDefault();
+                  convertFiletoBlobAndDownload(downloadUrl, filename);
+                }}
+                className="App-link"
+              >
+                {filename}
+              </a>
 
-            <input
-              style={linkStyle}
-              type="image"
-              alt="Magnet link"
-              src={magnetIcon}
-              onClick={(e) => {
-                e.preventDefault();
-                makeMagnet(downloadUrl);
-              }}
-              className="App-link"
-            ></input>
-          </div>
-        );
-      })}
-      {/* {data.application.map(({ id, name, description, photo }) => (
+              <input
+                style={linkStyle}
+                type="image"
+                alt="Magnet link"
+                src={magnetIcon}
+                onClick={(e) => {
+                  e.preventDefault();
+                  makeMagnet(downloadUrl);
+                }}
+                className="App-link"
+              ></input>
+            </div>
+          );
+        })}
+        {/* {data.application.map(({ id, name, description, photo }) => (
         <div key={id}>
           <h3>{name}</h3>
           <img
@@ -159,6 +165,7 @@ function DisplayLocations() {
           <br />
         </div>
       ))} */}
+      </div>
     </div>
   );
 }
@@ -167,7 +174,6 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h2>Download musesampler</h2>
         {/* <img src={logo} className="App-logo" alt="logo" /> */}
         {/* <p>
           Edit <code>src/App.tsx</code> and do save to reload.
@@ -180,7 +186,7 @@ function App() {
         >
           Learn React
         </a> */}
-        <DisplayLocations />
+        <DisplayApp appName="musesampler" />
       </header>
     </div>
   );

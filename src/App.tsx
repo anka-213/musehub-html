@@ -112,9 +112,13 @@ function DisplayApp({ appName }: { appName: string }) {
         {appTypes.map((platform) => {
           let platData = data?.application?.[platform]?.latestVersion;
           let platformName = platform.replace("App", "");
-          if (!platData) return <p>Got no data</p>;
+          if (!platData?.buildFileMusedownloadUrl)
+            return (
+              <div key={platform}>
+                <b>{platformName}: </b>No torrent avalable for this platform
+              </div>
+            );
           let { version, buildFileMusedownloadUrl } = platData;
-          if (!buildFileMusedownloadUrl) return <p>Got no data</p>;
           const downloadUrl = buildFileMusedownloadUrl;
           const filename = `${appName}-${platformName}-${version}.torrent`;
           const linkStyle = {
@@ -187,6 +191,8 @@ function App() {
           Learn React
         </a> */}
         <DisplayApp appName="musesampler" />
+        <br />
+        <DisplayApp appName="musescore" />
       </header>
     </div>
   );

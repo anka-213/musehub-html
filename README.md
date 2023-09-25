@@ -16,3 +16,15 @@ As an alternative, you can run [this script](./get_musesampler.sh) to download t
 ## File locations
 
 TODO: Determine where to put the files for each OS
+
+### MacOS
+
+After downloading and unzipping `musesampler-mac-0.4.1.34.zip`, copy or move the file `libMuseSamplerCoreLib.dylib` to `/usr/local/lib/libMuseSamplerCoreLib.dylib`.
+
+### Linux
+
+Simliarly to MacOS, move the `libMuseSamplerCoreLib.so` file to `/usr/lib/libMuseSamplerCoreLib.sh` after unzipping.
+
+### Windows
+
+I'm not completely sure, but I think you can place `MuseSamplerCoreLib.dll` inside of the installation folder of MuseScore
